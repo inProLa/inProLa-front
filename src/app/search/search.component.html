@@ -1,0 +1,35 @@
+<div>
+  <mat-form-field class="input-form-field">
+    <mat-label>Pesquisar trabalhos acadêmicos</mat-label>
+    <input matInput type="text" [(ngModel)]="searchValue" autocomplete="off">
+    @if (searchValue){
+      <button mat-icon-button matSuffix aria-label="Clear" (click)="searchValue=''">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </mat-form-field>
+
+  <button color="primary" mat-fab extended (click)="onSearchButtonClick()">
+    <mat-icon>search</mat-icon>
+    Search
+  </button>
+</div>
+
+
+<div class="tcc-card">
+  @for(tcc of tccs(); track tcc) {
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ tcc.title }}</mat-card-title>
+        <mat-card-subtitle>{{ tcc.authors[0] }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ tcc.abstract }}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button (click)="onDownloadButtonClick(tcc)">Baixar</button>
+      </mat-card-actions>
+    </mat-card>
+  }
+
+</div>

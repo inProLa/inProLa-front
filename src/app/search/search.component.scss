@@ -1,0 +1,22 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 5vh;
+}
+
+.input-form-field {
+  width: 50vh;
+  margin-right: 2vh;
+}
+
+.tcc-card {
+  width: 90vh;
+  .mat-mdc-card {
+    margin-bottom: 2vh;
+  }
+  .mat-mdc-card-title {
+    color: white;
+  }
+}
