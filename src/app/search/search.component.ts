@@ -7,11 +7,12 @@ import {SearchService} from "./search.service";
 import {Subject, takeUntil} from "rxjs";
 import {SearchResponse} from "./models/searchResponse";
 import {MatCardModule} from "@angular/material/card";
-import { MatMenuModule } from "@angular/material/menu";
+import {MatMenuModule} from "@angular/material/menu";
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {UploadModalComponent} from "./components/upload-modal/upload-modal.component";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {LoadingInterceptor} from "../common/loading/loading.interceptor";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @Component({
   selector: 'search',
@@ -24,7 +25,8 @@ import {LoadingInterceptor} from "../common/loading/loading.interceptor";
     MatCardModule,
     MatMenuModule,
     MatDialogModule,
-    HttpClientModule
+    HttpClientModule,
+    MatCheckboxModule
   ],
   providers: [SearchService,
     { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true }
@@ -35,18 +37,26 @@ import {LoadingInterceptor} from "../common/loading/loading.interceptor";
 export class SearchComponent implements OnDestroy{
   searchService = inject(SearchService);
   dialog = inject(MatDialog)
+  filters: Array<{name: string, checked: boolean}> = [];
 
   searchValue: string = '';
   tccs = signal<SearchResponse[]>([]);
   private subs = new Subject();
 
+  constructor() {
+    this.getFilters();
+  }
+
   onSearchButtonClick() {
-    this.searchService.searchForAcademicWorks(this.searchValue)
+    this.searchService.searchForAcademicWorks(
+      this.searchValue,
+      this.filters.filter(filter => filter.checked).map(filter => filter.name)
+    )
       .pipe(
         takeUntil(this.subs),
       )
-      .subscribe(value => {
-        this.tccs.set(value);
+      .subscribe(tccs => {
+        this.tccs.set(tccs);
       });
   }
 
@@ -90,6 +100,14 @@ export class SearchComponent implements OnDestroy{
         console.log('Modal closed with result:', result);
       }
     });
+  }
+
+  getFilters() {
+    this.searchService.getFiltersNames()
+      .pipe(takeUntil(this.subs))
+      .subscribe(value => {
+        this.filters = value.map(filter => ({name: filter, checked: false}));
+      });
   }
 
   ngOnDestroy() {

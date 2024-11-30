@@ -10,8 +10,10 @@ export class  SearchService {
 
   constructor(private client: HttpClient) {}
 
-  searchForAcademicWorks(searchValue: string) {
-    return this.client.get<Array<SearchResponse>>(`http://localhost:3000/search?searchText=${searchValue}`);
+  searchForAcademicWorks(searchValue: string, filters: Array<string>) {
+    return this.client.get<Array<SearchResponse>>(
+      `http://localhost:3000/search?searchText=${searchValue}${this._buildFilters(filters)}`
+    );
   }
 
   downloadZIPAcademicWork(fileId: string) {
@@ -28,5 +30,13 @@ export class  SearchService {
     formData.append('file', file);
 
     return this.client.post(`http://localhost:3000/process/upload`, formData)
+  }
+
+  getFiltersNames(): Observable<string[]> {
+    return this.client.get<string[]>(`http://localhost:3000/search/filters`);
+  }
+
+  _buildFilters(filters: string[]): string {
+    return filters.length > 0 ? `&filters=${filters.join('&filters=')}` : '';
   }
 }

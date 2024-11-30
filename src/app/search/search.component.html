@@ -20,8 +20,23 @@
 
   <button color="primary" mat-fab extended (click)="onSearchButtonClick()">
     <mat-icon>search</mat-icon>
-    Search
+    Pesquisar
   </button>
+  <button color="primary" mat-icon-button [matMenuTriggerFor]="menuFilter">
+    <mat-icon>filter_alt</mat-icon>
+  </button>
+  <mat-menu #menuFilter="matMenu">
+    @for (filter of filters; track filter) {
+      <div  mat-menu-item>
+        <mat-checkbox
+          [checked]="filter.checked"
+          (change)="filter.checked = $event.checked"
+        >
+          {{filter.name}}
+        </mat-checkbox>
+      </div>
+    }
+  </mat-menu>
 </div>
 
 
