@@ -19,4 +19,14 @@
   .mat-mdc-card-title {
     color: white;
   }
+
+  .mat-mdc-card-actions {
+    gap: 5px;
+  }
+}
+
+.menu-container {
+  position: fixed;
+  top: 10px;
+  right: 10px;
 }

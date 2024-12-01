@@ -1,18 +1,42 @@
-import {inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {SearchResponse} from "./models/searchResponse";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
-export class SearchService {
-  client = inject(HttpClient)
+export class  SearchService {
 
-  searchForAcademicWorks(searchValue: string) {
-    return this.client.get<Array<SearchResponse>>(`http://localhost:3000/search?searchText=${searchValue}`);
+  constructor(private client: HttpClient) {}
+
+  searchForAcademicWorks(searchValue: string, filters: Array<string>) {
+    return this.client.get<Array<SearchResponse>>(
+      `http://localhost:3000/search?searchText=${searchValue}${this._buildFilters(filters)}`
+    );
   }
 
-  downloadAcademicWork(fileId: string) {
-    return this.client.get(`http://localhost:3000/search/download?fileId=${fileId}`, { responseType: 'blob' });
+  downloadZIPAcademicWork(fileId: string) {
+    return this.client.get(`http://localhost:3000/search/download/zip?fileId=${fileId}`, { responseType: 'blob' });
+  }
+
+  downloadPDFAcademicWork(fileId: string) {
+    return this.client.get(`http://localhost:3000/search/download/pdf?fileId=${fileId}`, { responseType: 'blob' });
+  }
+
+  uploadNovoTrabalho(title: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('file', file);
+
+    return this.client.post(`http://localhost:3000/process/upload`, formData)
+  }
+
+  getFiltersNames(): Observable<string[]> {
+    return this.client.get<string[]>(`http://localhost:3000/search/filters`);
+  }
+
+  _buildFilters(filters: string[]): string {
+    return filters.length > 0 ? `&filters=${filters.join('&filters=')}` : '';
   }
 }

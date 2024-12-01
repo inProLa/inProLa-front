@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Upload de um trabalho novo</h2>
+<mat-dialog-content>
+  <form [formGroup]="uploadForm">
+    <mat-form-field>
+      <mat-label>Titulo do Trabalho</mat-label>
+      <input matInput formControlName="title" required>
+    </mat-form-field>
+    <input type="file" (change)="onFileSelected($event)" required>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onSave()" [disabled]="!uploadForm.valid || !selectedFile">Save</button>
+</mat-dialog-actions>
