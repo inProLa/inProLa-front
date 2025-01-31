@@ -7,6 +7,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {HttpClientModule} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-upload-modal',
@@ -18,11 +19,12 @@ import {MatSnackBar} from "@angular/material/snack-bar";
     MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatProgressSpinnerModule
   ],
   providers: [SearchService],
   templateUrl: './upload-modal.component.html',
-  styleUrl: './upload-modal.component.scss'
+  styleUrls: ['./upload-modal.component.scss']
 })
 export class UploadModalComponent {
   searchService = inject(SearchService);
@@ -34,6 +36,7 @@ export class UploadModalComponent {
     title: ['', Validators.required]
   });
   selectedFile: File | null = null;
+  loading = false;
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -48,6 +51,7 @@ export class UploadModalComponent {
 
   onSave(): void {
     if (this.uploadForm.valid && this.selectedFile) {
+      this.loading = true;
       const title = this.uploadForm.get('title')?.value;
       this.searchService.uploadNovoTrabalho(title, this.selectedFile).subscribe(() => {
           this._snackBar.open('Arquivo enviado com sucesso', 'Fechar', {duration: 2000})
@@ -57,7 +61,9 @@ export class UploadModalComponent {
         console.log(err)
           this._snackBar.open('Erro ao fazer upload do arquivo', 'Fechar', {duration: 2000});
         }
-      );
+      ).add(() => {
+        this.loading = false;
+      });
     }
   }
 }
