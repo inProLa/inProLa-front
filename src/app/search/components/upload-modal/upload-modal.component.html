@@ -9,6 +9,11 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-button (click)="onSave()" [disabled]="!uploadForm.valid || !selectedFile">Save</button>
+  <button mat-button (click)="onCancel()" [disabled]="loading">Cancel</button>
+  <button mat-button (click)="onSave()" [disabled]="!uploadForm.valid || !selectedFile || loading">
+    @if (loading) {
+      <mat-spinner diameter="20" style="display: inline-block; margin-right: 8px;"></mat-spinner>
+    }
+    Save
+  </button>
 </mat-dialog-actions>

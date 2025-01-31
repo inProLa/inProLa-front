@@ -18,7 +18,7 @@ import {AsyncPipe} from "@angular/common";
       justify-content: center;
       align-items: center;
       position: fixed;
-      z-index: 1000;
+      z-index: 1100;
       background: rgba(0, 0, 0, 0.5);
     }
 
